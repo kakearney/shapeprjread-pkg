@@ -106,6 +106,7 @@ function [m, punitfac] = buildmstruct(P)
 projections = {...
     'Transverse_Mercator'   'tranmerc'
     'Albers'                'eqaconicstd'
+    'Albers Conical Equal Area' 'eqaconicstd'
 };
 
 [tf,loc] = ismember(P.PROJECTION.name, projections(:,1));
