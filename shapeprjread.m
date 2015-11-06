@@ -1,4 +1,4 @@
-function [Shp, m] = shapeprjread(file, varargin)
+function [Shp, m, punitfac] = shapeprjread(file, varargin)
 %SHAPEPRJREAD Read a projected shapefile
 %
 % Shp = shapeprjread(file)
@@ -32,6 +32,11 @@ function [Shp, m] = shapeprjread(file, varargin)
 %           found in the file)
 %
 %   m:      map projection structure used for reverse projection.
+%
+%   fac:    projection unit conversion factor.  When call minvtran with the
+%           above map projection structure, multiple x/y values by this
+%           first.  When going the opposite way, divide after calling
+%           mfwdtran.
 
 %-------------------------
 % Setup
@@ -104,9 +109,10 @@ function [m, punitfac] = buildmstruct(P)
 % I'll just have to build it up manually)
 
 projections = {...
-    'Transverse_Mercator'   'tranmerc'
-    'Albers'                'eqaconicstd'
-    'Albers Conical Equal Area' 'eqaconicstd'
+    'Transverse_Mercator'           'tranmerc'
+    'Albers'                        'eqaconicstd'
+    'Albers Conical Equal Area'     'eqaconicstd'
+    'Lambert_Azimuthal_Equal_Area'  'eqaazim'
 };
 
 [tf,loc] = ismember(P.PROJECTION.name, projections(:,1));
@@ -177,18 +183,17 @@ m.geoid = oblateSpheroid;
 m.geoid.SemimajorAxis = P.GEOGCS.DATUM.SPHEROID.semiMajorAxis; % Assume in m?
 m.geoid.InverseFlattening = P.GEOGCS.DATUM.SPHEROID.inverseFlattening;
 
-
 % Set remaining parameters if they are found
 
 for ii = 1:length(flds)
     switch flds{ii}
-        case 'False_Easting'
+        case {'False_Easting', 'false_easting'}
             m.falseeasting = str2num(P.(flds{ii})) * punitfac;
-        case 'False_Northing'
+        case {'False_Northing', 'false_northing'}
             m.falsenorthing = str2num(P.(flds{ii})) * punitfac;
-        case 'Central_Meridian'
+        case {'Central_Meridian', 'central_meridian'}
             m.origin(2) = str2num(P.(flds{ii}));
-        case {'Latitude_Of_Origin', 'Central_Parallel'}
+        case {'Latitude_Of_Origin', 'Central_Parallel', 'latitude_of_origin'}
             m.origin(1) = str2num(P.(flds{ii}));
         case 'Scale_Factor'
             m.scale = str2num(P.(flds{ii}));
