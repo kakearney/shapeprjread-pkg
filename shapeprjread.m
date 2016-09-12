@@ -199,9 +199,9 @@ for ii = 1:length(flds)
             m.scale = str2num(P.(flds{ii}));
         case 'Standard_Parallel'
             m.mapparallel = str2num(P.(flds{ii}));
-        case 'Standard_Parallel_1'
+        case {'Standard_Parallel_1', 'standard_parallel_1'}
             m.mapparallels(1) = str2num(P.(flds{ii}));
-        case 'Standard_Parallel_2'
+        case {'Standard_Parallel_2', 'standard_parallel_2'}
             m.mapparallels(2) = str2num(P.(flds{ii}));
         otherwise
             warning('Found extra parameter: %s', flds{ii}); % May need to update code for these
