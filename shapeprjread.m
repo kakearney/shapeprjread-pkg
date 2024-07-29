@@ -123,7 +123,7 @@ end
 % Convert into mstruct
 
 if loc == 1
-    if regexpfound(P.name, 'UTM') % No idea if this is robust or not
+    if contains(P.name, 'UTM') % No idea if this is robust or not
         m = defaultm('utm');
         zone = regexp(P.name, 'UTM_Zone_([A-Z|0-9]*)', 'tokens', 'once');
         zone = zone{1};
