@@ -182,6 +182,9 @@ end
 % Subfunction: parse a field that is itself a structure
 
 function St = addstructure(St, str)
+
+mergestruct = @(x,y) cell2struct([struct2cell(x);struct2cell(y)],[fieldnames(x);fieldnames(y)]);
+
 Tmp = parsewkt(str);
 St = mergestruct(St, Tmp);
     
